@@ -114,7 +114,7 @@ RUN git clone https://github.com/SpinalHDL/NaxRiscv.git ${NAXRISCV} && \
     cd ${NAXRISCV} && \
     git checkout 51440b6 && \
     git submodule update --init --recursive && \
-    cd ext/NaxSoftware && ./init.sh && \
+    cd ext/NaxSoftware && wget https://github.com/SpinalHDL/NaxSoftware/releases/download/v0.1.0/buildroot.zip && unzip buildroot.zip && \
     chown -R user:user ${NAXRISCV}
 
 # Build riscv-isa-sim (spike), used as a golden model during the sim to check the dut behaviour (lock-step)
@@ -186,7 +186,7 @@ RUN make -C ${DRIVER_ROOT} test -j$(nproc)
 RUN make -C ${FUZZER_ROOT} -j$(nproc)
 
 # Install python packages
-RUN pip install --upgrade pip && \
+RUN pip install --upgrade pip minepy && \
     pip install -r ${SCRIPT_ROOT}/prepare/requirements.txt
 
 # Install python packages for SurgeFuzz
