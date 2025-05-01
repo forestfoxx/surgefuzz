@@ -11,6 +11,7 @@ RUN apt-get update && \
         autotools-dev \
         bc \
         bison \
+	    wget \
         build-essential \
         ca-certificates \
         ccache \
@@ -72,9 +73,12 @@ RUN groupadd --gid $USER_GID $USERNAME \
 # Install anaconda
 # https://github.com/conda-forge/miniforge/#unix-like-platforms-mac-os--linux
 ENV CONDA /conda
-RUN curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh" && \
-    bash /Mambaforge-$(uname)-$(uname -m).sh -b -p ${CONDA} && \
-    rm /Mambaforge-$(uname)-$(uname -m).sh
+#RUN curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh" && \
+#    bash Mambaforge-$(uname)-$(uname -m).sh -b -p ${CONDA} && \
+#    rm Mambaforge-$(uname)-$(uname -m).sh
+RUN wget -q -O "Mambaforge-$(uname)-$(uname -m).sh" "https://github.com/conda-forge/miniforge/releases/download/24.11.3-0/Miniforge3-24.11.3-0-Linux-x86_64.sh" && \
+    bash Mambaforge-$(uname)-$(uname -m).sh -b -p ${CONDA} && \
+    rm Mambaforge-$(uname)-$(uname -m).sh
 USER user:user
 RUN echo 'source "${CONDA}/etc/profile.d/conda.sh"' >> ~/.bash_profile && \
     echo 'source ~/.bash_profile' >> ~/.bashrc
@@ -91,7 +95,8 @@ RUN git clone https://github.com/YosysHQ/yosys && \
 # Install Verible
 RUN git clone https://github.com/chipsalliance/verible.git /verible && \
     cd /verible && \
-    git checkout v0.0-3110-gbb28b0b4 && \
+    git checkout v0.0-3110-gbb28b0b4 && apt-get remove -y bazel && \
+    wget https://github.com/bazelbuild/bazel/releases/download/6.4.0/bazel-6.4.0-installer-linux-x86_64.sh && chmod +x /verible/bazel-6.4.0-installer-linux-x86_64.sh && /verible/bazel-6.4.0-installer-linux-x86_64.sh && \
     bazel run -c opt :install -- /usr/local/bin
 
 # Setup chipyard
