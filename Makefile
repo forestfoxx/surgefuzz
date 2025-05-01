@@ -66,8 +66,8 @@ all: run
 # Build the docker image
 build:
 	docker build -t $(IMAGE_NAME) \
-		--build-arg USER_UID=$(shell id -u) \
-		--build-arg USER_GID=$(shell id -g) \
+		--build-arg USER_UID=1000 \
+		--build-arg USER_GID=1000 \
 		--build-arg TARGET_CORE=$(TARGET_CORE) \
 		--build-arg FUZZER=$(FUZZER) \
 		--build-arg ANNOTATION=$(ANNOTATION) \
